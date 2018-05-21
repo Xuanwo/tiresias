@@ -1,0 +1,10 @@
+# production server
+- name: production-server
+  address: 1.1.1.1
+  user: root
+  identity_file: ~/.ssh/private_key
+# staging server
+- name: staging-server
+  address: 2.2.2.2
+  user: root
+  identity_file: ~/.ssh/private_key
