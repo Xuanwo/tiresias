@@ -10,10 +10,8 @@ import (
 
 // Config is the config for tiresias.
 type Config struct {
-	Hosts     string `yaml:"hosts"`
-	SSHConfig string `yaml:"ssh_config"`
-
-	Servers []Server `yaml:"servers"`
+	Src []Endpoint `yaml:"src"`
+	Dst []Endpoint `yaml:"dst"`
 }
 
 // New will create a new config object.
@@ -23,7 +21,6 @@ func New() (*Config, error) {
 
 // LoadFromFilePath will load config from file.
 func (c *Config) LoadFromFilePath(filePath string) (err error) {
-
 	f, err := os.OpenFile(filePath, os.O_RDONLY, 0600)
 	if err != nil {
 		log.Printf("Open file failed for %v.", err)

@@ -1,14 +1,14 @@
-hosts: /etc/hosts
-ssh_config: /home/your_name/.ssh/config
+src:
+  - type: fs
+    path: /path/to/source/file
+  - type: http
+    options:
+      url: https://server-info.example
+      username: admin
+      password: admin
 
-servers:
-  # production server
-  - name: production-server
-    address: 1.1.1.1
-    user: root
-    identity_file: ~/.ssh/private_key
-  # staging server
-  - name: staging-server
-    address: 2.2.2.2
-    user: root
-    identity_file: ~/.ssh/private_key
+dst:
+  - type: ssh_config
+    path: /path/to/ssh_config
+  - type: hosts
+    path: /path/to/hosts
