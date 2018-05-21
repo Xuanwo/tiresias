@@ -1,10 +1,11 @@
 package main
 
 import (
-	"gopkg.in/urfave/cli.v1"
 	"log"
 	"os"
 	"sort"
+
+	"gopkg.in/urfave/cli.v1"
 
 	"github.com/Xuanwo/tiresias/config"
 	"github.com/Xuanwo/tiresias/constants"

@@ -2,14 +2,15 @@ package hosts
 
 import (
 	"fmt"
-	"github.com/Xuanwo/tiresias/config"
-	"github.com/Xuanwo/tiresias/constants"
-	"github.com/Xuanwo/tiresias/model"
-	"github.com/Xuanwo/tiresias/utils"
 	"html/template"
 	"log"
 	"os"
 	"time"
+
+	"github.com/Xuanwo/tiresias/config"
+	"github.com/Xuanwo/tiresias/constants"
+	"github.com/Xuanwo/tiresias/model"
+	"github.com/Xuanwo/tiresias/utils"
 )
 
 const hostTemplate = `{{ .Address }} {{ .Name }}
