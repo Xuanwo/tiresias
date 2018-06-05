@@ -24,7 +24,7 @@ func Seek(r io.ReadSeeker) (cur int64, err error) {
 		// Ignore line not start with tiresias prefix or end with tiresias suffix.
 		if !strings.HasPrefix(line, constants.CommentPrefix) || !strings.HasSuffix(line, constants.CommentSuffix) {
 			// Current size should add len(len) and len("\n")
-			cur += int64(len(scanner.Bytes()))
+			cur += int64(len(scanner.Bytes())) + 1
 			continue
 		}
 
