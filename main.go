@@ -14,6 +14,7 @@ import (
 	"github.com/Xuanwo/tiresias/destination/ssh"
 	"github.com/Xuanwo/tiresias/model"
 	"github.com/Xuanwo/tiresias/source"
+	"github.com/Xuanwo/tiresias/source/consul"
 	"github.com/Xuanwo/tiresias/source/fs"
 )
 
@@ -53,6 +54,14 @@ func main() {
 				if err != nil {
 					return err
 				}
+			case constants.TypeConsul:
+				src = &consul.Consul{}
+				err = src.Init(v)
+				if err != nil {
+					return err
+				}
+			default:
+				log.Fatalf("Type %s is not supported.", v.Type)
 			}
 			sources[k] = src
 		}

@@ -5,4 +5,5 @@ const (
 	TypeFs        = "fs"
 	TypeHosts     = "hosts"
 	TypeSSHConfig = "ssh_config"
+	TypeConsul    = "consul"
 )
