@@ -72,6 +72,8 @@ func main() {
 				if err != nil {
 					return err
 				}
+			default:
+				log.Fatalf("Type %s is not supported.", v.Type)
 			}
 			destinations[k] = dst
 		}
@@ -81,7 +83,7 @@ func main() {
 			if err != nil {
 				return err
 			}
-			s = append(ts)
+			s = append(s, ts...)
 		}
 
 		for _, v := range destinations {
