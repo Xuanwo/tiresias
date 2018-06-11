@@ -1,11 +1,21 @@
 src:
   - type: fs
-    path: /path/to/source/file
+    options:
+      path: /path/to/source/file
   - type: http
     options:
       url: https://server-info.example
       username: admin
       password: admin
+  - type: consul
+    options:
+      address: console.example
+      schema: http
+      datacenter: xxx
+      prefix: example-
+    default:
+      user: root
+      identity_file: ~/.ssh/example
 
 dst:
   - type: ssh_config
