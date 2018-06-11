@@ -15,11 +15,35 @@ import (
 // Fs will load data from file system.
 type Fs struct {
 	files []string
+
+	defaults model.Server
+
+	Path string `yaml:"path"`
 }
 
 // Init will initiate Fs.
 func (f *Fs) Init(c config.Endpoint) (err error) {
-	f.files, err = filepath.Glob(c.Path)
+	// Load options
+	content, err := yaml.Marshal(c.Options)
+	if err != nil {
+		return
+	}
+	err = yaml.Unmarshal(content, f)
+	if err != nil {
+		return
+	}
+
+	// Load defaults.
+	content, err = yaml.Marshal(c.Default)
+	if err != nil {
+		return
+	}
+	err = yaml.Unmarshal(content, &f.defaults)
+	if err != nil {
+		return
+	}
+
+	f.files, err = filepath.Glob(f.Path)
 	if err != nil {
 		return
 	}
@@ -55,6 +79,18 @@ func (f *Fs) List() (s []model.Server, err error) {
 		}
 
 		s = append(s, ts...)
+	}
+
+	for k := range s {
+		if f.defaults.User != "" {
+			s[k].User = f.defaults.User
+		}
+		if f.defaults.Port != "" {
+			s[k].Port = f.defaults.Port
+		}
+		if f.defaults.IdentityFile != "" {
+			s[k].IdentityFile = f.defaults.IdentityFile
+		}
 	}
 	return
 }
