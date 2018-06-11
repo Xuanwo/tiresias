@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"gopkg.in/yaml.v2"
+
 	"github.com/Xuanwo/tiresias/config"
 	"github.com/Xuanwo/tiresias/constants"
 	"github.com/Xuanwo/tiresias/model"
@@ -18,14 +20,22 @@ const hostTemplate = `{{ .Address }} {{ .Name }}
 
 // Hosts is used to update Hosts.
 type Hosts struct {
-	Path string
+	Path string `yaml:"path"`
 
 	tmpl *template.Template
 }
 
 // Init will initiate Hosts.
 func (h *Hosts) Init(c config.Endpoint) (err error) {
-	h.Path = c.Path
+	// Load options
+	content, err := yaml.Marshal(c.Options)
+	if err != nil {
+		return
+	}
+	err = yaml.Unmarshal(content, h)
+	if err != nil {
+		return
+	}
 
 	// Init template.
 	h.tmpl, err = template.New("hosts").Parse(hostTemplate)

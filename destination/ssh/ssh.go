@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"gopkg.in/yaml.v2"
+
 	"github.com/Xuanwo/tiresias/config"
 	"github.com/Xuanwo/tiresias/constants"
 	"github.com/Xuanwo/tiresias/model"
@@ -29,14 +31,22 @@ const sshConfigTemplate = `Host {{ .Name }}
 
 // SSH is used to update SSH Config
 type SSH struct {
-	Path string
+	Path string `yaml:"path"`
 
 	tmpl *template.Template
 }
 
 // Init will initiate SSH.
 func (ss *SSH) Init(c config.Endpoint) (err error) {
-	ss.Path = c.Path
+	// Load options
+	content, err := yaml.Marshal(c.Options)
+	if err != nil {
+		return
+	}
+	err = yaml.Unmarshal(content, ss)
+	if err != nil {
+		return
+	}
 
 	// Init template.
 	ss.tmpl, err = template.New("ssh_config").Parse(sshConfigTemplate)
