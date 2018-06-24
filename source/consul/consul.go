@@ -1,6 +1,10 @@
 package consul
 
 import (
+	"log"
+	"net"
+	"time"
+
 	"github.com/hashicorp/consul/api"
 	"gopkg.in/yaml.v2"
 
@@ -42,6 +46,14 @@ func (c *Consul) Init(e config.Endpoint) (err error) {
 	if err != nil {
 		return
 	}
+
+	// Check if consul reachable before connect.
+	conn, err := net.DialTimeout("tcp", c.Address, 3*time.Second)
+	if err != nil {
+		log.Printf("Consul %s connect failed for %v.", c.Address, err)
+		return
+	}
+	conn.Close()
 
 	cc := api.DefaultConfig()
 	cc.Address = c.Address
