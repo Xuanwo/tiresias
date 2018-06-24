@@ -1,3 +1,5 @@
+database: ~/.tiresias/db
+
 src:
   - type: fs
     options:

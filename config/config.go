@@ -10,6 +10,8 @@ import (
 
 // Config is the config for tiresias.
 type Config struct {
+	Database string `yaml:"database"`
+
 	Src []Endpoint `yaml:"src"`
 	Dst []Endpoint `yaml:"dst"`
 }
