@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/golang/snappy"
+  packages = ["."]
+  revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
+
+[[projects]]
   name = "github.com/hashicorp/consul"
   packages = ["api"]
   revision = "5174058f0d2bda63fa5198ab96c33d9a909c58ed"
@@ -32,6 +38,25 @@
   revision = "3864e76763d94a6df2f9960b16a20a33da9f9a66"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/syndtr/goleveldb"
+  packages = [
+    "leveldb",
+    "leveldb/cache",
+    "leveldb/comparer",
+    "leveldb/errors",
+    "leveldb/filter",
+    "leveldb/iterator",
+    "leveldb/journal",
+    "leveldb/memdb",
+    "leveldb/opt",
+    "leveldb/storage",
+    "leveldb/table",
+    "leveldb/util"
+  ]
+  revision = "0d5a0ceb10cf9ab89fdd744cc8c50a83134f6697"
+
+[[projects]]
   name = "gopkg.in/urfave/cli.v1"
   packages = ["."]
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
@@ -46,6 +71,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "121ccd59564049e5d8879d32a7c01fba7908a871ab9dde511c81d63eb775619b"
+  inputs-digest = "bc7dced60e8a3faa3e7b46374f7de2e78dfc27216e2c6bf6061b3caca62f951e"
   solver-name = "gps-cdcl"
   solver-version = 1
