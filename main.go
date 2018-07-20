@@ -33,6 +33,10 @@ var (
 )
 
 func run(c *cli.Context) error {
+	if len(c.Args()) == 0 {
+		cli.ShowAppHelpAndExit(c, 0)
+	}
+
 	Conf, _ = config.New()
 	err := Conf.LoadFromFilePath(c.String("config"))
 	if err != nil {
