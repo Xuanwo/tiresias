@@ -1,15 +1,13 @@
 package consul
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"time"
 
-	"github.com/hashicorp/consul/api"
-	"gopkg.in/yaml.v2"
-
-	"github.com/Xuanwo/tiresias/config"
 	"github.com/Xuanwo/tiresias/model"
+	"github.com/hashicorp/consul/api"
 )
 
 // Consul will load data from consul.
@@ -17,7 +15,7 @@ type Consul struct {
 	client  *api.Client
 	catalog *api.Catalog
 
-	defaults model.Server
+	d model.Server
 
 	Address    string `yaml:"address"`
 	Schema     string `yaml:"schema"`
@@ -25,28 +23,18 @@ type Consul struct {
 	Prefix     string `yaml:"prefix"`
 }
 
+// Name will return current source's name.
+func (c *Consul) Name() string {
+	return fmt.Sprintf("consul:%s:%s", c.Address, c.Datacenter)
+}
+
+// Defaults will return the default value for server.
+func (c *Consul) Defaults() *model.Server {
+	return &c.d
+}
+
 // Init will initiate Fs.
-func (c *Consul) Init(e config.Endpoint) (err error) {
-	// Load options
-	content, err := yaml.Marshal(e.Options)
-	if err != nil {
-		return
-	}
-	err = yaml.Unmarshal(content, c)
-	if err != nil {
-		return
-	}
-
-	// Load defaults.
-	content, err = yaml.Marshal(e.Default)
-	if err != nil {
-		return
-	}
-	err = yaml.Unmarshal(content, &c.defaults)
-	if err != nil {
-		return
-	}
-
+func (c *Consul) Init() (err error) {
 	// Check if consul reachable before connect.
 	conn, err := net.DialTimeout("tcp", c.Address, 3*time.Second)
 	if err != nil {
@@ -68,31 +56,19 @@ func (c *Consul) Init(e config.Endpoint) (err error) {
 	return
 }
 
-// List will list all servers from Fs.
-func (c *Consul) List() (s []model.Server, err error) {
+// List will list all servers from Consul.
+func (c *Consul) List(ch chan *model.Server) (err error) {
+	defer close(ch)
+
 	nodes, _, err := c.catalog.Nodes(nil)
 	if err != nil {
 		return
 	}
-	s = make([]model.Server, len(nodes))
-	for k, v := range nodes {
-		s[k] = model.Server{
+	for _, v := range nodes {
+		ch <- &model.Server{
 			Name:    c.Prefix + v.Node,
 			Address: v.Address,
 		}
 	}
-
-	for k := range s {
-		if c.defaults.User != "" {
-			s[k].User = c.defaults.User
-		}
-		if c.defaults.Port != "" {
-			s[k].Port = c.defaults.Port
-		}
-		if c.defaults.IdentityFile != "" {
-			s[k].IdentityFile = c.defaults.IdentityFile
-		}
-	}
-
 	return
 }
