@@ -47,6 +47,13 @@ func SaveServers(s Source) (err error) {
 	c := make(chan *model.Server, 10)
 	d := s.Defaults()
 
+	// Delete current source servers.
+	err = model.DeleteSource(s.Name())
+	if err != nil {
+		log.Printf("Delete source from db failed for %v.", err)
+		return
+	}
+
 	// Create source before list it.
 	err = model.CreateSource(s.Name())
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 
 	"github.com/Xuanwo/tiresias/constants"
 	"github.com/Xuanwo/tiresias/contexts"
+	"log"
 )
 
 // CreateSource will create a source.
@@ -36,4 +37,21 @@ func ListSources() (s []string, err error) {
 	it.Release()
 	err = it.Error()
 	return
+}
+
+// DeleteSource will delete a source with all it's servers.
+func DeleteSource(source string) (err error) {
+	c := make(chan *Server, 10)
+
+	go ListServersBySource(source, c)
+
+	for v := range c {
+		err = DeleteServer(source, v.Name)
+		if err != nil {
+			log.Printf("Delete server %s failed for %v.", v.Name, err)
+			continue
+		}
+	}
+
+	return contexts.DB.Delete(constants.FormatSourceKey(source), nil)
 }

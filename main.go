@@ -50,6 +50,7 @@ func run(c *cli.Context) error {
 		log.Fatalf("Setup failed for %v.")
 	}
 
+	// Save servers to db.
 	for _, v := range AvailableSources {
 		err = source.SaveServers(v)
 		if err != nil {
@@ -57,10 +58,22 @@ func run(c *cli.Context) error {
 		}
 	}
 
+	// Load servers from db.
 	for _, v := range Destinations {
 		err = destination.LoadServers(v)
 		if err != nil {
 			return err
+		}
+	}
+
+	// Delete servers in db but not expected.
+	for _, v := range StoredSources {
+		if _, ok := ExpectedSources[v]; !ok {
+			err = model.DeleteSource(v)
+			if err != nil {
+				log.Printf("Delete source failed for %v.", err)
+				continue
+			}
 		}
 	}
 

@@ -66,3 +66,44 @@ func ListServers(c chan *Server) (err error) {
 	}
 	return
 }
+
+// ListServersBySource will list all servers under source.
+func ListServersBySource(source string, c chan *Server) (err error) {
+	defer close(c)
+
+	it := contexts.DB.NewIterator(
+		util.BytesPrefix([]byte(constants.KeyServerPrefix)), nil)
+
+	b := it.Seek(constants.FormatServerKey(source, ""))
+
+	for b {
+		key := it.Key()
+
+		if !bytes.HasPrefix(key, constants.FormatServerKey(source, "")) {
+			b = false
+		}
+
+		s := &Server{}
+		err = msgpack.Unmarshal(it.Value(), s)
+		if err != nil {
+			return
+		}
+
+		c <- s
+
+		b = it.Next()
+	}
+
+	it.Release()
+	err = it.Error()
+	if err != nil {
+		log.Fatalf("List servers failed for %v.", err)
+		return
+	}
+	return
+}
+
+// DeleteServer will delete a server.
+func DeleteServer(source, name string) (err error) {
+	return contexts.DB.Delete(constants.FormatServerKey(source, name), nil)
+}
