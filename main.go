@@ -33,7 +33,7 @@ var (
 )
 
 func run(c *cli.Context) error {
-	if len(c.Args()) == 0 {
+	if c.NumFlags() == 0 {
 		cli.ShowAppHelpAndExit(c, 0)
 	}
 
